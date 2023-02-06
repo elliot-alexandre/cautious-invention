@@ -2,16 +2,13 @@ import { VoiceConnectionStatus, entersState } from "@discordjs/voice";
 import { GatewayIntentBits } from "discord-api-types/v10";
 import { Client, Message, VoiceState } from "discord.js";
 import dotenv from "dotenv";
-import express from "express";
 import { CommandAction, TextCommand } from "./../types/command";
-import { CommandHandling } from "./discord";
+import { CommandHandling } from "./discord/commands";
 import { BotConnection } from "./discord/connection";
 import { createListeningStream } from "./discord/recording";
 import transcriptTest from "./transcript/speech-to-text";
 
 dotenv.config();
-
-const app = express();
 
 export function init(newAudio: any) {
   // let bufferArray: Buffer[] = [];
@@ -110,15 +107,3 @@ client.on(
     } catch {}
   }
 );
-
-try {
-  app.get("/", (req: any, res: any) => {
-    res.send("Hello World!");
-  });
-
-  app.listen(process.env.PORT || 3000, () => {
-    return console.log(`Express is listening at ${url}`);
-  });
-} catch (error: any) {
-  console.error(error);
-}

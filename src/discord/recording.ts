@@ -1,64 +1,59 @@
+import { OpusEncoder } from "@discordjs/opus";
 import { EndBehaviorType, VoiceReceiver } from "@discordjs/voice";
 import type { User } from "discord.js";
-import { opus } from "prism-media";
-import { Decoder } from "prism-media/dist/opus";
-import { OpusEncoderOptions } from "prism-media/dist/opus/adapters/OpusEncoder";
-import { init } from "../index";
+import transcriptTest from "../transcript/speech-to-text";
 
 export async function createListeningStream(
   receiver: VoiceReceiver,
   userId: string,
   user?: User
 ) {
+  let buffer: any = [];
+  const opusEncoder = new OpusEncoder(16000, 2);
+
   const opusStream = receiver.subscribe(userId, {
     end: {
       behavior: EndBehaviorType.AfterSilence,
       duration: 1000,
     },
   });
-  let transcriptBuffer: any = [];
-  let buffer: any = [];
 
-  const options: OpusEncoderOptions = {
-    rate: 48000,
-    channels: 1,
-    frameSize: 2,
-  };
-
-  const encoder = new opus.Encoder(options);
-  const decoder = new opus.Decoder(options);
   opusStream.on("data", (data) => {
-    buffer.push(data);
+    buffer.push(opusEncoder.decode(data));
   });
 
-  encoder.
-  async function convert_audio(input: any) {
+  opusStream.on("end", async () => {
+    buffer = Buffer.concat(buffer);
+    const duration = buffer.length / 16000 / 4;
+    console.log("duration:", duration + "ms");
+
+    if (duration < 1 || duration > 19) {
+      console.log("TOO SHORT / TOO LONG; SKPPING");
+      return;
+    }
+    try {
+      let new_buffer = await convertAudio(buffer);
+      let out = await transcriptTest(new_buffer);
+      if (out != null) {
+        console.log("result:" + out.text);
+      } else if (typeof out.text !== "string") {
+        console.log("error", out);
+      }
+    } catch (e) {
+      console.log("tmpraw rename: " + e);
+    }
+  });
+
+  async function convertAudio(input: any) {
     try {
       // stereo to mono channel
-      const data = new Int16Array(input);
-      const ndata = data.filter((el, idx) => idx % 2);
+      let data = new Int16Array(input);
+      let ndata = data.filter((el, idx) => idx % 2);
       return Buffer.from(ndata);
     } catch (e) {
       console.log(e);
-      console.log("convert_audio: " + e);
+      console.log("convertAudio: " + e);
       throw e;
     }
   }
-
-  opusStream.on("end", async () => {
-    let buffer1 = Buffer.concat(buffer);
-    const duration = buffer1.length / 48000 / 4;
-    console.log("duration: " + duration);
-    if (duration < 1.0) {
-      buffer = Buffer.concat(buffer);
-      let pcm_buffer = Decoder(buffer);
-      console.log("pcm_buffer", pcm_buffer);
-      let mono_pcm_buffer = convert_audio(pcm_buffer);
-      transcriptBuffer.push(await mono_pcm_buffer);
-    }
-  });
-  console.log(JSON.stringify(transcriptBuffer, null, 4));
-
-  console.log(buffer);
-  init(buffer);
 }

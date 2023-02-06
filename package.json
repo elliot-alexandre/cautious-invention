@@ -5,9 +5,6 @@
   "repository": "https://github.com/elliot-alexandre/cautious-invention.git",
   "author": "elliot-alexandre",
   "license": "MIT",
-  "engines": {
-    "node": "16.13.1"
-  },
   "scripts": {
     "build": "rimraf ./build && tsc",
     "dev": "NODE_ENV=development DEBUG=server nodemon -L --exec \"ts-node\" src/index.ts",
@@ -25,12 +22,13 @@
     }
   },
   "dependencies": {
+    "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.14.0",
     "@solyarisoftware/voskjs": "^1.2.8",
     "discord-api-types": "^0.37.31",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
+    "ffmpeg": "^0.0.4",
     "libsodium-wrappers": "^0.7.10",
     "prism-media": "2.0.0-alpha.0"
   },

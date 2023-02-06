@@ -7,7 +7,7 @@ const {
 
 import * as path from "path";
 
-async function transcriptTest(bufferArray: Buffer[]) {
+async function transcriptTest(buffer: Buffer) {
   const modelDirectory = path.join(
     //@ts-ignore
     process.env.PWD,
@@ -23,9 +23,11 @@ async function transcriptTest(bufferArray: Buffer[]) {
   const model = loadModel(modelDirectory);
 
   try {
-    const result = await transcriptFromBuffer(bufferArray[0], model);
+    const result = await transcriptFromBuffer(buffer, model);
 
     console.log(`transcript: ${JSON.stringify(result, null, 4)}`);
+
+    return result;
   } catch (error) {
     console.error(error);
   }
