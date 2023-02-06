@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "terminals.sortTerminals": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "[yaml]": {
+      "editor.formatOnSave": false
+    },
+    "[svg]": {
+      "editor.defaultFormatter": "jock.svg"
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/yarn.lock": true
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/.hg/store/**": true,
+      "**/.cache/**": true
+    },
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/node_modules/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "fabiospampinato.vscode-open-in-node-modules",
+      "jasonnutter.search-node-modules",
+      "esbenp.prettier-vscode",
+      "mikestead.dotenv",
+      "ms-vscode-remote.vscode-remote-extensionpack",
+      "wmaurer.change-case",
+      "yzhang.markdown-all-in-one",
+      "paulmolluzzo.convert-css-in-js",
+      "bierner.markdown-yaml-preamble"
+    ]
+  },
+  "folders": [
+    {
+      "name": "root",
+      "path": ".."
+    }
+  ]
+}
