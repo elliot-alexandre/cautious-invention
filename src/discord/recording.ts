@@ -1,7 +1,7 @@
 import { OpusEncoder } from "@discordjs/opus";
 import { EndBehaviorType, VoiceReceiver } from "@discordjs/voice";
 import type { User } from "discord.js";
-import transcriptTest from "../transcript/speech-to-text";
+import { transcriptTest } from "../speech-to-text/speech-to-text";
 
 export async function createListeningStream(
   receiver: VoiceReceiver,
@@ -28,7 +28,6 @@ export async function createListeningStream(
     console.log("duration:", duration + "ms");
 
     if (duration < 1 || duration > 19) {
-      console.log("TOO SHORT / TOO LONG; SKPPING");
       return;
     }
     try {
@@ -40,7 +39,7 @@ export async function createListeningStream(
         console.log("error", out);
       }
     } catch (e) {
-      console.log("tmpraw rename: " + e);
+      console.log("convert or transcript issue: " + e);
     }
   });
 

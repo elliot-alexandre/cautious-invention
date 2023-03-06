@@ -1,0 +1,35 @@
+[
+  {
+    "member1": {
+      "guildId": "925203323261419520",
+      "joinedTimestamp": 1640656061730,
+      "premiumSinceTimestamp": null,
+      "nickname": null,
+      "pending": false,
+      "communicationDisabledUntilTimestamp": null,
+      "userId": "117471687045414917",
+      "avatar": null,
+      "displayName": "|~|a\\_0",
+      "roles": ["925203323261419520"],
+      "avatarURL": null,
+      "displayAvatarURL": "https://cdn.discordapp.com/avatars/117471687045414917/7abc4b823f81289ae4130dbd8d082971.webp"
+    }
+  },
+
+  {
+    "member2": {
+      "guildId": "925203323261419520",
+      "joinedTimestamp": 1640656061730,
+      "premiumSinceTimestamp": null,
+      "nickname": null,
+      "pending": false,
+      "communicationDisabledUntilTimestamp": null,
+      "userId": "117471687045414917",
+      "avatar": null,
+      "displayName": "|~|a\\_0",
+      "roles": ["925203323261419520"],
+      "avatarURL": null,
+      "displayAvatarURL": "https://cdn.discordapp.com/avatars/117471687045414917/7abc4b823f81289ae4130dbd8d082971.webp"
+    }
+  }
+]
