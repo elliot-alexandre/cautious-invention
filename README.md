@@ -4,14 +4,13 @@ Trying to create a discord bot that can detect specific keyword from the audio s
 
 ## Reference and documentation (reminder)
 
-- Discord Documentation to about receiving audio
+- Discord Documentation about receiving audio
 
   - https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage
 
-- Vosk-Api to use a different approch of voice recognition without using the speech recognistion webkit.
-
+- Vosk-Api use a different approch of voice recognition without using the speech recognistion webkit.
   - https://github.com/alphacep/vosk-api/tree/master/nodejs
   - https://alphacephei.com/vosk/
 
-- Avoiding the use of a paying speech recognition api.
+- Avoiding the use of a paying speech recognition api (google).
   - https://www.npmjs.com/package/discord-speech-recognition
