@@ -1,6 +1,8 @@
 import { Message } from "discord.js";
 import { CommandAction } from "../../../types/command";
-import { CurrentUsersArray } from "./../../index";
+import { AddAudioInterraction } from "./addAudio";
+import { AddUserInterraction } from "./addUser";
+import { AddWordInterraction } from "./addWord";
 
 export function CommandHandling(
   command: CommandAction,
@@ -9,25 +11,26 @@ export function CommandHandling(
 ) {
   switch (command) {
     case CommandAction.ADD_USER: {
-      let userId = argument[0];
-      const listWords = new Set();
-
-      console.log(CurrentUsersArray);
-      argument.map((element: string, index: number) => {
-        element.toLowerCase().match(/[^a-z]/g) ? null : listWords.add(element);
-      });
-
-      console.log(listWords);
-      //@ts-ignore
-      const regex = /[^0-9]/g;
-      console.log(userId.replaceAll(regex, ""));
-
+      const userId = argument[0];
+      AddUserInterraction(userId, message);
+      break;
+    }
+    case CommandAction.ADD_WORD: {
+      AddWordInterraction(argument, message);
       break;
     }
     case CommandAction.DELETE_USER: {
       break;
     }
-    case CommandAction.EDIT_USER: {
+    case CommandAction.ADD_AUDIO: {
+      const audioName: string = argument[0];
+      AddAudioInterraction(audioName, message);
+      break;
+    }
+    case CommandAction.LIST_AUDIO: {
+      break;
+    }
+    case CommandAction.DELETE_AUDIO: {
       break;
     }
     default:

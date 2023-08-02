@@ -1,58 +1,52 @@
 import { OpusEncoder } from "@discordjs/opus";
-import { EndBehaviorType, VoiceReceiver } from "@discordjs/voice";
-import type { User } from "discord.js";
-import { transcriptTest } from "../speech-to-text/speech-to-text";
+import {
+  EndBehaviorType,
+  VoiceConnection,
+  VoiceReceiver,
+} from "@discordjs/voice";
+import { Transcript } from "../speech-to-text/speechToText";
+import { TextRecognition } from "../speech-to-text/textRecognition";
+import { convertAudio } from "./audio/convert";
 
-export async function createListeningStream(
+export async function CreateListeningStream(
   receiver: VoiceReceiver,
   userId: string,
-  user?: User
+  shardVoiceConnection: VoiceConnection
 ) {
-  let buffer: any = [];
-  const opusEncoder = new OpusEncoder(16000, 2);
+  try {
+    let buffer: any = [];
+    const opusEncoder = new OpusEncoder(16000, 2);
 
-  const opusStream = receiver.subscribe(userId, {
-    end: {
-      behavior: EndBehaviorType.AfterSilence,
-      duration: 1000,
-    },
-  });
+    const opusStream = receiver.subscribe(userId, {
+      end: {
+        behavior: EndBehaviorType.AfterSilence,
+        duration: 1000,
+      },
+    });
 
-  opusStream.on("data", (data) => {
-    buffer.push(opusEncoder.decode(data));
-  });
+    opusStream.on("data", (data) => {
+      buffer.push(opusEncoder.decode(data));
+    });
 
-  opusStream.on("end", async () => {
-    buffer = Buffer.concat(buffer);
-    const duration = buffer.length / 16000 / 4;
-    console.log("duration:", duration + "ms");
+    opusStream.on("end", async () => {
+      buffer = Buffer.concat(buffer);
+      const duration = buffer.length / 16000 / 4;
+      console.log("duration:", duration + "ms");
 
-    if (duration < 1 || duration > 19) {
-      return;
-    }
-    try {
-      let new_buffer = await convertAudio(buffer);
-      let out = await transcriptTest(new_buffer);
+      if (duration < 1 || duration > 19) {
+        return;
+      }
+      const new_buffer = await convertAudio(buffer);
+      const out = await Transcript(new_buffer);
       if (out != null) {
-        console.log("result:" + out.text);
+        console.log("result: " + out.text);
+        TextRecognition(out.text, userId, shardVoiceConnection);
+        return;
       } else if (typeof out.text !== "string") {
         console.log("error", out);
       }
-    } catch (e) {
-      console.log("convert or transcript issue: " + e);
-    }
-  });
-
-  async function convertAudio(input: any) {
-    try {
-      // stereo to mono channel
-      let data = new Int16Array(input);
-      let ndata = data.filter((el, idx) => idx % 2);
-      return Buffer.from(ndata);
-    } catch (e) {
-      console.log(e);
-      console.log("convertAudio: " + e);
-      throw e;
-    }
+    });
+  } catch (e) {
+    console.warn(e);
   }
 }

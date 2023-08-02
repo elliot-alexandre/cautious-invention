@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { FileCheck } from "./../../../types/command";
+import { FileCheck } from "../../types/command";
 
 export function CheckForFile(pathName: string): Promise<FileCheck> {
   return new Promise((resolve, reject) => {
@@ -11,4 +11,11 @@ export function CheckForFile(pathName: string): Promise<FileCheck> {
       }
     });
   });
+}
+
+export function GetItemsDir(dirPath: string) {
+  return fs
+    .readdirSync(dirPath, { withFileTypes: true })
+    .filter((item) => !item.isDirectory())
+    .map((item) => item.name);
 }

@@ -5,8 +5,13 @@ export type TextCommand = {
 
 export enum CommandAction {
   ADD_USER = "ADD_USER",
+  ADD_WORD = "ADD_WORD",
+  ADD_AUDIO = "ADD_AUDIO",
+  HELP = "HELP",
   DELETE_USER = "DELETE_USER",
-  EDIT_USER = "EDIT_USER",
+  LIST_USER = "LIST_USER",
+  LIST_AUDIO = "LIST_AUDIO",
+  DELETE_AUDIO = "DELETE_AUDIO",
 }
 export type CommandType = "Action" | "Read";
 

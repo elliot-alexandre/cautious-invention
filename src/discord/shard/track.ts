@@ -3,22 +3,43 @@ import {
   VoiceConnectionStatus,
   entersState,
 } from "@discordjs/voice";
-import { createListeningStream } from "../recording";
-import { client } from "./../../index";
+import { CreateListeningStream } from "../recording";
 
-export async function TrackingVoice(shardVoiceConnection: VoiceConnection) {
+export async function TrackingVoice(
+  shardVoiceConnection: VoiceConnection,
+  userId2: string
+) {
   try {
-    await entersState(shardVoiceConnection, VoiceConnectionStatus.Ready, 20e3);
-    const receiver = shardVoiceConnection.receiver;
+    try {
+      await entersState(
+        shardVoiceConnection,
+        VoiceConnectionStatus.Ready,
+        20_000
+      );
+    } catch {
+      if (
+        shardVoiceConnection.state.status !== VoiceConnectionStatus.Destroyed
+      ) {
+        try {
+          shardVoiceConnection.destroy();
+        } catch {}
+      }
+    }
 
+    const receiver = shardVoiceConnection.receiver;
+    // console.log(test);
     /**
      * @todo
      *
      * changing the userId to be for each user in the listen list instead of everyone.
      */
 
-    receiver.speaking.on("start", (userId) => {
-      createListeningStream(receiver, userId, client.users.cache.get(userId));
+    receiver.speaking.on("start", async (userId) => {
+      console.log("Fire!");
+
+      if (userId === userId2) {
+        return CreateListeningStream(receiver, userId2, shardVoiceConnection);
+      }
     });
   } catch (error) {
     console.warn(error);

@@ -1,8 +1,10 @@
 import { VoiceConnection, joinVoiceChannel } from "@discordjs/voice";
-import { VoiceBasedChannel } from "discord.js";
+// import { VoiceBasedChannel } from "discord.js";
 import { TrackingVoice } from "./track";
 
-export async function ShardJoin(channel: VoiceBasedChannel) {
+export async function ShardJoin(channel: any, userId: string) {
+  console.log("Boom");
+
   const shardVoiceConnection: VoiceConnection = joinVoiceChannel({
     channelId: channel?.id,
     guildId: channel?.guildId,
@@ -10,5 +12,5 @@ export async function ShardJoin(channel: VoiceBasedChannel) {
     adapterCreator: channel?.guild.voiceAdapterCreator,
   });
 
-  TrackingVoice(shardVoiceConnection);
+  TrackingVoice(shardVoiceConnection, userId);
 }

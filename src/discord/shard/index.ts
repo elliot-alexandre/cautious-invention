@@ -1,18 +1,20 @@
-import { VoiceBasedChannel } from "discord.js";
+// import { VoiceBasedChannel } from "discord.js";
 import { ShardJoin } from "./connection";
+import { ShardDisconnect } from "./disconnect";
 
 export enum ShardAction {
   JOIN = "join",
   DISCONNECT = "disconnect",
 }
 
-export const ShardHandler = (
+export function ShardHandler(
   action: ShardAction,
-  channel: VoiceBasedChannel | undefined
-) => {
+  channel: any | undefined,
+  userId: string
+) {
   if (action === ShardAction.JOIN && channel !== undefined) {
-    return ShardJoin(channel);
+    ShardJoin(channel, userId);
   } else if (action === ShardAction.DISCONNECT) {
-    return null;
+    ShardDisconnect(channel);
   }
-};
+}
