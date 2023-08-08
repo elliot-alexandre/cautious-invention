@@ -1,5 +1,6 @@
 import { GatewayIntentBits } from "discord-api-types/v10";
-import { Client, Events, Message, VoiceState } from "discord.js";
+import type { Message, VoiceState } from "discord.js";
+import { Client, Events, Options } from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { CommandAction, TextCommand } from "./../types/command";
@@ -7,6 +8,7 @@ import { CommandHandling } from "./discord/commands";
 import { Reply } from "./discord/commands/replyMessage";
 import { ShardAction, ShardHandler } from "./discord/shard";
 import { InitListUser } from "./discord/user";
+const { loadModel } = require("@solyarisoftware/voskjs");
 
 dotenv.config();
 
@@ -35,7 +37,6 @@ const modelDirectory = path.join(
   process.env.PWD,
   "./models/vosk-model-small-en-us-0.15"
 );
-const { loadModel } = require("@solyarisoftware/voskjs");
 
 export const model = loadModel(modelDirectory);
 
@@ -45,13 +46,16 @@ if (!url && !token) {
 InitListUser();
 
 GatewayIntentBits;
-export const client = new Client({
+export const client: Client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
   ],
+  sweepers: {
+    ...Options.DefaultSweeperSettings,
+  },
 });
 
 // ClientEvents commands
@@ -96,6 +100,8 @@ client.on(
     ) {
       ShardHandler(ShardAction.JOIN, newChannel, "117471687045414917");
     }
+
+    console.log("Voice State Update");
   }
 );
 

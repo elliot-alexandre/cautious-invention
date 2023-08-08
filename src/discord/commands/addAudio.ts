@@ -1,3 +1,4 @@
+import type { Message } from "discord.js";
 import * as fs from "fs";
 import * as https from "https";
 import path from "path";
@@ -5,7 +6,10 @@ import { GetItemsDir } from "../utils";
 import { Prefix } from "./../../index";
 import { Reply } from "./replyMessage";
 
-export async function AddAudioInterraction(audioName: string, message: any) {
+export async function AddAudioInterraction(
+  audioName: string,
+  message: Message
+) {
   try {
     const regex = new RegExp("^[a-zA-Z0-9_.-]*$");
     if (!regex.test(audioName))

@@ -1,9 +1,10 @@
-export async function convertAudio(input: any) {
+export function convertAudio(input: any) {
   try {
     // stereo to mono channel
-    let data = new Int16Array(input);
-    let ndata = data.filter((el, idx) => idx % 2);
-    return Buffer.from(ndata);
+    const data = new Int16Array(input);
+    const ndata = data.filter((el, idx) => idx % 2);
+    const bufferMono = Buffer.from(ndata);
+    return bufferMono;
   } catch (e) {
     console.log(e);
     console.log("convertAudio: " + e);

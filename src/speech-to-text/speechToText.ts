@@ -1,20 +1,22 @@
 import { model } from "./../index";
-const {
-  logLevel,
-  transcriptFromBuffer,
-  freeModel,
-} = require("@solyarisoftware/voskjs");
+const { transcriptFromBuffer } = require("@solyarisoftware/voskjs");
 
-export async function Transcript(buffer: Buffer) {
-  /**
-   *  @summary set the vosk log level to silence
-   */
-  logLevel(-1);
+type TranscriptResult = {
+  result: [];
+  text: string;
+};
 
-  try {
-    const result = await transcriptFromBuffer(buffer, model);
-    return result;
-  } catch (error) {
-    console.error(error);
-  }
+export function Transcript(buffer: Buffer): Promise<TranscriptResult> {
+  const newPromise: Promise<TranscriptResult> = new Promise(
+    (resolve, reject) => {
+      const result = transcriptFromBuffer(buffer, model);
+
+      if (result) {
+        resolve(result);
+      } else {
+        reject(new Error("Oops!.. Number must be less than 5"));
+      }
+    }
+  );
+  return newPromise;
 }

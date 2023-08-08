@@ -1,52 +1,50 @@
 import { OpusEncoder } from "@discordjs/opus";
-import {
-  EndBehaviorType,
-  VoiceConnection,
-  VoiceReceiver,
-} from "@discordjs/voice";
+import type { VoiceReceiver } from "@discordjs/voice";
+import { EndBehaviorType } from "@discordjs/voice";
 import { Transcript } from "../speech-to-text/speechToText";
 import { TextRecognition } from "../speech-to-text/textRecognition";
 import { convertAudio } from "./audio/convert";
 
+const opusEncoder = new OpusEncoder(16000, 2);
+
 export async function CreateListeningStream(
   receiver: VoiceReceiver,
   userId: string,
-  shardVoiceConnection: VoiceConnection
+  channelGuildId: string
 ) {
-  try {
-    let buffer: any = [];
-    const opusEncoder = new OpusEncoder(16000, 2);
+  let buffer: any = [];
 
-    const opusStream = receiver.subscribe(userId, {
-      end: {
-        behavior: EndBehaviorType.AfterSilence,
-        duration: 1000,
-      },
-    });
+  const opusStream = receiver.subscribe(userId, {
+    end: {
+      behavior: EndBehaviorType.AfterSilence,
+      duration: 1000,
+    },
+  });
 
-    opusStream.on("data", (data) => {
-      buffer.push(opusEncoder.decode(data));
-    });
+  opusStream.on("data", (data) => {
+    buffer.push(opusEncoder.decode(data));
+  });
 
-    opusStream.on("end", async () => {
-      buffer = Buffer.concat(buffer);
-      const duration = buffer.length / 16000 / 4;
-      console.log("duration:", duration + "ms");
+  opusStream.on("end", () => {
+    buffer = Buffer.concat(buffer);
+    const duration = buffer.length / 16000 / 4;
 
-      if (duration < 1 || duration > 19) {
-        return;
-      }
-      const new_buffer = await convertAudio(buffer);
-      const out = await Transcript(new_buffer);
-      if (out != null) {
-        console.log("result: " + out.text);
-        TextRecognition(out.text, userId, shardVoiceConnection);
-        return;
-      } else if (typeof out.text !== "string") {
-        console.log("error", out);
-      }
-    });
-  } catch (e) {
-    console.warn(e);
-  }
+    console.log("duration:", duration + "ms");
+
+    if (duration < 1 || duration > 19) {
+      buffer.fill(0);
+      buffer = null;
+      return;
+    } else {
+      Transcript(convertAudio(buffer)).then((data) => {
+        if (!data) {
+          console.warn("data:" + data);
+        }
+        console.log("result: " + data.text);
+        TextRecognition(data.text, userId, channelGuildId);
+        buffer.fill(0);
+        buffer = null;
+      });
+    }
+  });
 }

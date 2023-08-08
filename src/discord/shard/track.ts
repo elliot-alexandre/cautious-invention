@@ -1,46 +1,37 @@
+import type { VoiceConnection } from "@discordjs/voice";
 import {
-  VoiceConnection,
   VoiceConnectionStatus,
   entersState,
+  getVoiceConnection,
 } from "@discordjs/voice";
+import type { VoiceBasedChannel } from "discord.js";
 import { CreateListeningStream } from "../recording";
 
+const { Worker, isMainThread, parentPort } = require("worker_threads");
+
 export async function TrackingVoice(
-  shardVoiceConnection: VoiceConnection,
-  userId2: string
+  userId2: string,
+  channel: VoiceBasedChannel
 ) {
   try {
-    try {
-      await entersState(
-        shardVoiceConnection,
-        VoiceConnectionStatus.Ready,
-        20_000
-      );
-    } catch {
-      if (
-        shardVoiceConnection.state.status !== VoiceConnectionStatus.Destroyed
-      ) {
-        try {
-          shardVoiceConnection.destroy();
-        } catch {}
-      }
+    const connection: VoiceConnection | undefined = getVoiceConnection(
+      channel.guildId
+    );
+
+    const receiver = connection?.receiver;
+    if (connection !== undefined) {
+      receiver?.speaking.on("start", async (userId) => {
+        console.log("Fire!");
+        await entersState(
+          connection as VoiceConnection,
+          VoiceConnectionStatus.Ready,
+          20_000
+        );
+        if (userId === userId2) {
+          CreateListeningStream(receiver, userId2, channel.guildId);
+        }
+      });
     }
-
-    const receiver = shardVoiceConnection.receiver;
-    // console.log(test);
-    /**
-     * @todo
-     *
-     * changing the userId to be for each user in the listen list instead of everyone.
-     */
-
-    receiver.speaking.on("start", async (userId) => {
-      console.log("Fire!");
-
-      if (userId === userId2) {
-        return CreateListeningStream(receiver, userId2, shardVoiceConnection);
-      }
-    });
   } catch (error) {
     console.warn(error);
   }

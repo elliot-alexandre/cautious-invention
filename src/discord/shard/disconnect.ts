@@ -1,8 +1,8 @@
 import { getVoiceConnection } from "@discordjs/voice";
-import { VoiceBasedChannel } from "discord.js";
+import type { VoiceBasedChannel } from "discord.js";
 
 export async function ShardDisconnect(channel: VoiceBasedChannel) {
-  const connection = getVoiceConnection(channel.guild.id);
+  const connection = getVoiceConnection(channel.guildId);
   if (connection !== undefined) {
     connection.destroy();
   } else {

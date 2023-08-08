@@ -1,11 +1,14 @@
+import type { Message } from "discord.js";
 import * as fs from "fs";
 import path from "path";
 import { GetItemsDir } from "../utils";
 import { EventActionType, InputWord, UserData } from "./../../../types/user";
 import { Prefix } from "./../../index";
 import { Reply } from "./replyMessage";
-
-export async function AddWordInterraction(argument: string[], message: any) {
+export async function AddWordInterraction(
+  argument: string[],
+  message: Message
+) {
   const pathData = path.join(
     //@ts-ignore
     process.env.PWD,

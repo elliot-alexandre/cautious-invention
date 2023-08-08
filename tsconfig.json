@@ -8,7 +8,7 @@
     "incremental": false,
     "lib": ["es6", "dom", "es2017", "ESNext"],
     "typeRoots": ["types/**/*"],
-    "types": ["node", "jest", "express"],
+    "types": ["node"],
     "target": "es5",
     "skipLibCheck": true,
     "esModuleInterop": true,

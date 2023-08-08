@@ -1,17 +1,18 @@
+import type { VoiceConnection } from "@discordjs/voice";
 import {
-  VoiceConnection,
   createAudioPlayer,
   createAudioResource,
+  getVoiceConnection,
 } from "@discordjs/voice";
-import * as fs from "fs";
+import { EventActionType } from "./../../types/user";
 
 import path from "path";
-import { InputWord } from "types/user";
+import type { InputWord } from "types/user";
 
 export function TextRecognition(
   Transcript: string,
   UserId: string,
-  shardVoiceConnection: VoiceConnection
+  channelGuildId: string
 ) {
   const pathData = path.join(
     //@ts-ignore
@@ -19,40 +20,47 @@ export function TextRecognition(
     "./public/discord.json"
   );
 
-  let data = JSON.parse(
-    fs.readFileSync(pathData, { encoding: "utf8", flag: "r" })
-  );
-  const triggers = Object.fromEntries(data)[UserId].words;
+  // const data = JSON.parse(
+  //   fs.readFileSync(pathData, { encoding: "utf8", flag: "r" })
+  // );
+  // const triggers = Object.fromEntries(data)[UserId].words;
 
-  console.log(triggers.length);
+  const triggers = [
+    {
+      value: "skill issue",
+      action: EventActionType.PLAY,
+      options: "dino.mp3",
+    },
+  ];
 
   for (let index = 0; index < triggers.length; index++) {
     const triggerWord = triggers[index].value;
-    console.log(triggerWord);
     if (Transcript.includes(triggerWord)) {
-      TriggerAction(UserId, triggers[index], shardVoiceConnection);
+      TriggerAction(UserId, triggers[index], channelGuildId);
     }
   }
-  return;
 }
 
 function TriggerAction(
   UserId: string,
   word: InputWord,
-  shardVoiceConnection: VoiceConnection
+  channelGuildId: string
 ) {
-  console.log("test2");
   const pathAudio = path.join(
     //@ts-ignore
     process.env.PWD,
     "./public/audio/dino.mp3"
   );
 
+  const connection: VoiceConnection | undefined =
+    getVoiceConnection(channelGuildId);
+
   const player = createAudioPlayer();
 
   const resource = createAudioResource(pathAudio);
 
-  shardVoiceConnection.subscribe(player);
-
-  player.play(resource);
+  if (connection) {
+    connection.subscribe(player);
+  }
+  return player.play(resource);
 }
