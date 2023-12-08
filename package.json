@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/voice": "^0.14.0",
+    "@discordjs/voice": "^0.16.0",
     "@solyarisoftware/voskjs": "^1.2.8",
     "discord-api-types": "^0.37.31",
     "discord.js": "^14.7.1",

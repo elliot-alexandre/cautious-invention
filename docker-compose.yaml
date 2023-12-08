@@ -1,0 +1,18 @@
+version: "1.0"
+
+services:
+  cautious-invention:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cautious-invention
+    command: yarn dev
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/app/
+      - /app/node_modules
+    ports:
+      - 3001:3000
